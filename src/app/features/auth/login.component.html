@@ -1,0 +1,195 @@
+<app-header></app-header>
+
+<!-- Hero Section -->
+<section class="hero">
+  <img
+    src="https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=1200&h=400&fit=crop"
+    alt="Login Hero"
+    class="hero-bg"
+  />
+  <div class="hero-overlay"></div>
+  <div class="hero-content">
+    <h1>Join Our Community</h1>
+    <p>Access your orders and exclusive offers</p>
+  </div>
+</section>
+
+<div class="auth-container">
+  <div class="auth-card">
+    <!-- Success Message -->
+    <div *ngIf="successMessage" class="alert alert-success">
+      <i class="fas fa-check-circle"></i> {{ successMessage }}
+    </div>
+
+    <!-- Error Message -->
+    <div *ngIf="errorMessage" class="alert alert-danger">
+      <i class="fas fa-exclamation-circle"></i> {{ errorMessage }}
+    </div>
+
+    <!-- Login Form -->
+    <div class="auth-form" *ngIf="isLogin">
+      <h2>Login to Your Account</h2>
+      <p class="form-subtitle">Sign in to access your orders and account</p>
+
+      <form (ngSubmit)="onLogin()" class="form">
+        <div class="form-group">
+          <label>Email Address</label>
+          <input
+            type="email"
+            [(ngModel)]="loginForm.email"
+            name="email"
+            placeholder="Enter your email"
+            [disabled]="isLoading"
+            required
+          />
+        </div>
+
+        <div class="form-group">
+          <label>Password</label>
+          <input
+            type="password"
+            [(ngModel)]="loginForm.password"
+            name="password"
+            placeholder="Enter your password"
+            [disabled]="isLoading"
+            required
+          />
+        </div>
+
+        <a href="#" class="forgot-password">Forgot Password?</a>
+
+        <button type="submit" class="btn-primary" [disabled]="isLoading">
+          <span *ngIf="!isLoading">Sign In</span>
+          <span *ngIf="isLoading"> <i class="fas fa-spinner fa-spin"></i> Signing In... </span>
+        </button>
+      </form>
+
+      <div class="form-footer">
+        <p>
+          Don't have an account?
+          <button type="button" class="link-btn" (click)="toggleForm()" [disabled]="isLoading">
+            Create one
+          </button>
+        </p>
+      </div>
+    </div>
+
+    <!-- Register Form -->
+    <div class="auth-form" *ngIf="!isLogin">
+      <h2>Create Your Account</h2>
+      <p class="form-subtitle">Sign up to start shopping</p>
+
+      <form (ngSubmit)="onRegister()" class="form">
+        <div class="form-row">
+          <div class="form-group">
+            <label>First Name</label>
+            <input
+              type="text"
+              [(ngModel)]="registerForm.firstName"
+              name="firstName"
+              placeholder="First name"
+              [disabled]="isLoading"
+              required
+            />
+          </div>
+          <div class="form-group">
+            <label>Last Name</label>
+            <input
+              type="text"
+              [(ngModel)]="registerForm.lastName"
+              name="lastName"
+              placeholder="Last name"
+              [disabled]="isLoading"
+              required
+            />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Email Address</label>
+          <input
+            type="email"
+            [(ngModel)]="registerForm.email"
+            name="email"
+            placeholder="Enter your email"
+            [disabled]="isLoading"
+            required
+          />
+        </div>
+
+        <div class="form-group">
+          <label>Phone Number</label>
+          <input
+            type="tel"
+            [(ngModel)]="registerForm.phone"
+            name="phone"
+            placeholder="Enter your phone number"
+            [disabled]="isLoading"
+            required
+          />
+        </div>
+
+        <div class="form-group">
+          <label>Password</label>
+          <input
+            type="password"
+            [(ngModel)]="registerForm.password"
+            name="password"
+            placeholder="Create a password"
+            [disabled]="isLoading"
+            required
+          />
+        </div>
+
+        <div class="form-group">
+          <label>Confirm Password</label>
+          <input
+            type="password"
+            [(ngModel)]="registerForm.confirmPassword"
+            name="confirmPassword"
+            placeholder="Confirm your password"
+            [disabled]="isLoading"
+            required
+          />
+        </div>
+
+        <button type="submit" class="btn-primary" [disabled]="isLoading">
+          <span *ngIf="!isLoading">Create Account</span>
+          <span *ngIf="isLoading">
+            <i class="fas fa-spinner fa-spin"></i> Creating Account...
+          </span>
+        </button>
+      </form>
+
+      <div class="form-footer">
+        <p>
+          Already have an account?
+          <button type="button" class="link-btn" (click)="toggleForm()" [disabled]="isLoading">
+            Sign in
+          </button>
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Info Cards -->
+  <div class="info-cards">
+    <div class="info-card">
+      <div class="icon">🚚</div>
+      <h3>Fast Shipping</h3>
+      <p>We ship within 2-5 business days across Egypt</p>
+    </div>
+    <div class="info-card">
+      <div class="icon">💰</div>
+      <h3>Cash on Delivery</h3>
+      <p>Pay when you receive your order</p>
+    </div>
+    <div class="info-card">
+      <div class="icon">🔒</div>
+      <h3>Secure Shopping</h3>
+      <p>Your data is safe with us</p>
+    </div>
+  </div>
+</div>
+
+<app-footer></app-footer>

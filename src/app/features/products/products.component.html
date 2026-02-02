@@ -1,0 +1,125 @@
+<app-header></app-header>
+
+<!-- Hero Section -->
+<section class="hero">
+  <img
+    src="https://images.unsplash.com/photo-1479064555552-3ef4979f8deb?w=1200&h=400&fit=crop"
+    alt="Products Hero"
+    class="hero-bg"
+  />
+  <div class="hero-overlay"></div>
+  <div class="hero-content">
+    <h1>Our Collection</h1>
+    <p>Browse our latest casual wear collection for every style</p>
+  </div>
+</section>
+
+<div class="products-container">
+  <div class="container">
+    <!-- Breadcrumb -->
+    <div class="breadcrumb"><a href="/">Home</a> / <span>Products</span></div>
+
+    <div class="products-layout">
+      <!-- Sidebar Filters -->
+      <aside class="filters-sidebar">
+        <div class="filter-section">
+          <h3 class="filter-title">Filter By</h3>
+
+          <!-- Category Filter -->
+          <div class="filter-group">
+            <label class="filter-label">Category</label>
+            <div class="filter-options">
+              <label class="checkbox-label">
+                <input
+                  type="radio"
+                  name="category"
+                  value=""
+                  [(ngModel)]="selectedCategory"
+                  (change)="filterProducts()"
+                />
+                <span>All Categories</span>
+              </label>
+              <label class="checkbox-label" *ngFor="let cat of categories">
+                <input
+                  type="radio"
+                  name="category"
+                  [value]="cat.id"
+                  [(ngModel)]="selectedCategory"
+                  (change)="filterProducts()"
+                />
+                <span>{{ cat.name }}</span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Price Filter -->
+          <div class="filter-group">
+            <label class="filter-label">Price Range</label>
+            <div class="price-range">
+              <input
+                type="range"
+                min="0"
+                max="10000"
+                [(ngModel)]="minPrice"
+                (change)="filterProducts()"
+                class="price-slider"
+              />
+              <input
+                type="range"
+                min="0"
+                max="10000"
+                [(ngModel)]="maxPrice"
+                (change)="filterProducts()"
+                class="price-slider"
+              />
+              <div class="price-display">
+                EGP {{ minPrice | number: '1.0-0' }} - EGP {{ maxPrice | number: '1.0-0' }}
+              </div>
+            </div>
+          </div>
+
+          <!-- Reset Button -->
+          <button class="reset-btn" (click)="resetFilters()">Reset Filters</button>
+        </div>
+      </aside>
+
+      <!-- Main Content -->
+      <main class="products-main">
+        <!-- Sort Options -->
+        <div class="sort-section">
+          <label for="sort">Sort By:</label>
+          <select
+            id="sort"
+            [(ngModel)]="selectedSort"
+            (change)="filterProducts()"
+            class="sort-select"
+          >
+            <option value="newest">Newest</option>
+            <option value="popular">Most Popular</option>
+            <option value="price-low">Price: Low to High</option>
+            <option value="price-high">Price: High to Low</option>
+          </select>
+          <span class="result-count">{{ filteredProducts.length }} Products</span>
+        </div>
+
+        <!-- Products Grid -->
+        <div class="products-grid">
+          <app-product-card
+            *ngFor="let product of filteredProducts"
+            [product]="product"
+            (addToCart)="onAddToCart($event)"
+            (viewDetails)="onViewDetails($event)"
+          >
+          </app-product-card>
+        </div>
+
+        <!-- Empty State -->
+        <div class="empty-state" *ngIf="filteredProducts.length === 0">
+          <p>No products found. Try adjusting your filters.</p>
+        </div>
+      </main>
+    </div>
+  </div>
+</div>
+
+<app-footer></app-footer>

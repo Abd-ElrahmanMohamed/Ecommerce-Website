@@ -1,0 +1,201 @@
+<div class="admin-orders-container">
+  <div class="orders-header">
+    <h1>📊 Orders Management</h1>
+    <p class="orders-subtitle">Manage and track all customer orders</p>
+  </div>
+
+  <!-- Stats Cards -->
+  <div *ngIf="!isLoading" class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-number">{{ getStatusStats().total }}</div>
+      <div class="stat-label">Total Orders</div>
+    </div>
+    <div class="stat-card pending">
+      <div class="stat-number">{{ getStatusStats().pending }}</div>
+      <div class="stat-label">Pending</div>
+    </div>
+    <div class="stat-card processing">
+      <div class="stat-number">{{ getStatusStats().processing }}</div>
+      <div class="stat-label">Processing</div>
+    </div>
+    <div class="stat-card ready">
+      <div class="stat-number">{{ getStatusStats().ready }}</div>
+      <div class="stat-label">Ready</div>
+    </div>
+    <div class="stat-card shipped">
+      <div class="stat-number">{{ getStatusStats().shipped }}</div>
+      <div class="stat-label">Shipped</div>
+    </div>
+    <div class="stat-card received">
+      <div class="stat-number">{{ getStatusStats().received }}</div>
+      <div class="stat-label">Received</div>
+    </div>
+  </div>
+
+  <!-- Filters -->
+  <div class="filters-section">
+    <label for="statusFilter">Filter by Status:</label>
+    <select id="statusFilter" [(ngModel)]="selectedStatus" class="filter-select">
+      <option value="all">All Orders</option>
+      <option value="Pending">Pending</option>
+      <option value="Processing">Processing</option>
+      <option value="Ready">Ready</option>
+      <option value="Shipped">Shipped</option>
+      <option value="Received">Received</option>
+      <option value="Cancelled">Cancelled/Refused</option>
+    </select>
+    <button (click)="loadAllOrders()" class="btn btn-refresh">🔄 Refresh</button>
+    <button (click)="exportAsCSV()" class="btn btn-export-csv">📄 Export as CSV</button>
+    <button (click)="exportAsPDF()" class="btn btn-export-pdf">📕 Export as PDF</button>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="loading-state">
+    <div class="spinner"></div>
+    <p>Loading orders...</p>
+  </div>
+
+  <!-- Empty State -->
+  <div *ngIf="!isLoading && getFilteredOrders().length === 0" class="empty-state">
+    <div class="empty-icon">📭</div>
+    <h2>No Orders Found</h2>
+    <p>No orders match the selected filter</p>
+  </div>
+
+  <!-- Orders Table -->
+  <div *ngIf="!isLoading && getFilteredOrders().length > 0" class="orders-table-wrapper">
+    <table class="orders-table">
+      <thead>
+        <tr>
+          <th class="expand-col"></th>
+          <th>Order Number</th>
+          <th>Customer</th>
+          <th>Total</th>
+          <th>Items</th>
+          <th>Status</th>
+          <th>Date</th>
+          <th class="actions-col">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <ng-container *ngFor="let order of getFilteredOrders()">
+          <tr class="order-row" [class.expanded]="expandedOrderId === order._id">
+            <td class="expand-col">
+              <button
+                class="expand-btn"
+                (click)="toggleOrderDetails(order._id)"
+                [class.active]="expandedOrderId === order._id"
+              >
+                ▼
+              </button>
+            </td>
+            <td class="order-number">
+              <strong>{{ order.orderNumber }}</strong>
+            </td>
+            <td class="customer-name">
+              <div>{{ order.user.name }}</div>
+              <div class="email">{{ order.user.email }}</div>
+            </td>
+            <td class="total-amount">
+              <strong>EGP {{ order.totalAmount.toFixed(2) }}</strong>
+            </td>
+            <td class="items-count">{{ getTotalItems(order.items) }}</td>
+            <td class="status-cell">
+              <span [ngClass]="getStatusClass(order.status)" class="status-badge">
+                {{ getStatusBadgeText(order.status) }}
+              </span>
+            </td>
+            <td class="date-col">{{ formatDate(order.createdAt) }}</td>
+            <td class="actions-col">
+              <button
+                *ngIf="editingOrderId !== order._id"
+                class="btn btn-sm btn-edit"
+                (click)="startEditing(order)"
+              >
+                ✏️ Edit
+              </button>
+              <div *ngIf="editingOrderId === order._id" class="editing-actions">
+                <select [(ngModel)]="editingStatus" class="status-select">
+                  <option *ngFor="let status of statuses" [value]="status">{{ status }}</option>
+                </select>
+                <button (click)="saveStatusChange(order._id)" class="btn btn-sm btn-save">
+                  Save
+                </button>
+                <button (click)="cancelEdit()" class="btn btn-sm btn-cancel">Cancel</button>
+              </div>
+            </td>
+          </tr>
+
+          <!-- Expanded Details -->
+          <tr *ngIf="expandedOrderId === order._id" class="details-row">
+            <td colspan="8">
+              <div class="order-details">
+                <div class="details-grid">
+                  <!-- Order Items -->
+                  <div class="details-section">
+                    <h3>📦 Order Items</h3>
+                    <table class="items-table">
+                      <thead>
+                        <tr>
+                          <th>Product</th>
+                          <th class="text-right">Qty</th>
+                          <th class="text-right">Unit Price</th>
+                          <th class="text-right">Total</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr *ngFor="let item of order.items">
+                          <td>{{ item.productName }}</td>
+                          <td class="text-right">{{ item.quantity }}</td>
+                          <td class="text-right">EGP {{ item.price.toFixed(2) }}</td>
+                          <td class="text-right">
+                            <strong>EGP {{ (item.price * item.quantity).toFixed(2) }}</strong>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+
+                  <!-- Shipping Address -->
+                  <div class="details-section">
+                    <h3>🚚 Shipping Address</h3>
+                    <div class="address-box">
+                      <p>
+                        <strong>{{ order.shippingAddress.name }}</strong>
+                      </p>
+                      <p>{{ order.shippingAddress.street }}</p>
+                      <p>{{ order.shippingAddress.city }}, {{ order.shippingAddress.state }}</p>
+                      <p>
+                        {{ order.shippingAddress.postalCode }} {{ order.shippingAddress.country }}
+                      </p>
+                      <p class="mobile">📱 {{ order.shippingAddress.mobile }}</p>
+                    </div>
+                  </div>
+
+                  <!-- Order Summary -->
+                  <div class="details-section">
+                    <h3>💰 Order Summary</h3>
+                    <div class="summary-box">
+                      <div class="summary-row">
+                        <span>Subtotal:</span>
+                        <strong>EGP {{ order.totalAmount.toFixed(2) }}</strong>
+                      </div>
+                      <div class="summary-row">
+                        <span>Total Amount:</span>
+                        <strong class="highlight">EGP {{ order.totalAmount.toFixed(2) }}</strong>
+                      </div>
+                      <div class="summary-row">
+                        <span>Payment Method:</span>
+                        <strong>Cash on Delivery (COD)</strong>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </td>
+          </tr>
+        </ng-container>
+      </tbody>
+    </table>
+  </div>
+</div>

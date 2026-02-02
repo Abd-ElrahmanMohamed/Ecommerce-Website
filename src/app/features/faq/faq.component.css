@@ -1,0 +1,347 @@
+.faq-container {
+  background: var(--bg-primary);
+  width: 100%;
+  box-sizing: border-box;
+  overflow-x: hidden;
+}
+
+/* Hero Banner Section */
+.hero {
+  position: relative;
+  height: 400px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hero-bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 1;
+}
+
+.hero-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(0, 102, 204, 0.8), rgba(255, 107, 53, 0.8));
+  z-index: 2;
+}
+
+.hero-content {
+  position: relative;
+  z-index: 3;
+  text-align: center;
+  color: white;
+}
+
+.hero-content h1 {
+  font-size: 52px;
+  font-weight: 800;
+  margin: 0 0 16px 0;
+  letter-spacing: -0.5px;
+}
+
+.hero-content p {
+  font-size: 20px;
+  margin: 0;
+  font-weight: 400;
+  opacity: 0.95;
+}
+
+.hero-section {
+  background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+  color: white;
+  padding: 80px 20px;
+  text-align: center;
+  display: none;
+}
+
+.hero-section h1 {
+  margin: 0 0 16px 0;
+  font-size: 44px;
+  font-weight: 700;
+}
+
+.hero-section p {
+  margin: 0;
+  font-size: 18px;
+  opacity: 0.9;
+}
+
+.section {
+  padding: 80px 20px;
+}
+
+.category-filter {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 50px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.filter-btn {
+  padding: 12px 28px;
+  background: var(--bg-secondary);
+  color: var(--text-secondary);
+  border: 2px solid transparent;
+  border-radius: 10px;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.filter-btn:hover {
+  background: transparent;
+  color: var(--primary-color);
+  border-color: var(--primary-color);
+}
+
+.filter-btn.active {
+  background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+  color: white;
+  border-color: transparent;
+  box-shadow: 0 10px 25px rgba(0, 102, 204, 0.25);
+}
+
+.faq-list {
+  display: grid;
+  gap: 16px;
+  max-width: 900px;
+  margin: 0 auto 50px;
+}
+
+.faq-item {
+  border: 2px solid var(--border-color);
+  border-radius: 12px;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  background: var(--bg-primary);
+}
+
+.faq-item:hover {
+  border-color: var(--primary-color);
+  box-shadow: 0 8px 20px rgba(0, 102, 204, 0.12);
+}
+
+.faq-item.open {
+  box-shadow: 0 12px 30px rgba(0, 102, 204, 0.18);
+  border-color: var(--secondary-color);
+}
+
+.faq-question {
+  width: 100%;
+  padding: 24px;
+  background: transparent;
+  border: none;
+  text-align: left;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text-primary);
+  transition: all 0.3s ease;
+}
+
+.faq-question:hover {
+  background: rgba(0, 102, 204, 0.04);
+}
+
+.faq-item.open .faq-question {
+  background: linear-gradient(135deg, rgba(255, 107, 53, 0.08), rgba(0, 102, 204, 0.08));
+  color: var(--secondary-color);
+}
+
+.question-text {
+  flex: 1;
+  text-align: left;
+}
+
+.toggle-icon {
+  font-size: 24px;
+  font-weight: bold;
+  flex-shrink: 0;
+  color: var(--secondary-color);
+  transition: transform 0.3s ease;
+}
+
+.faq-item.open .toggle-icon {
+  transform: rotate(90deg);
+}
+
+.faq-answer {
+  padding: 0 24px 24px;
+  background: transparent;
+  border-top: 1px solid var(--border-color);
+  animation: slideDown 0.3s ease;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.faq-answer p {
+  margin: 0;
+  padding-top: 16px;
+  font-size: 15px;
+  color: var(--text-secondary);
+  line-height: 1.8;
+}
+
+.help-section {
+  max-width: 700px;
+  margin: 60px auto 0;
+}
+
+.help-card {
+  background: linear-gradient(135deg, var(--bg-secondary) 0%, rgba(255, 107, 53, 0.05) 100%);
+  border: 2px solid var(--secondary-color);
+  border-radius: 16px;
+  padding: 48px 40px;
+  text-align: center;
+  box-shadow: 0 12px 30px rgba(255, 107, 53, 0.12);
+}
+
+.help-card h3 {
+  margin: 0 0 12px 0;
+  font-size: 28px;
+  font-weight: 800;
+  color: var(--text-primary);
+}
+
+.help-card p {
+  margin: 0 0 28px 0;
+  font-size: 16px;
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+.btn-primary {
+  display: inline-block;
+  padding: 14px 36px;
+  background: linear-gradient(135deg, var(--secondary-color), #ff8c42);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 15px;
+  font-weight: 700;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 10px 25px rgba(255, 107, 53, 0.3);
+}
+
+.btn-primary:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 15px 35px rgba(255, 107, 53, 0.4);
+}
+
+@media (max-width: 768px) {
+  .hero-content h1 {
+    font-size: 36px;
+  }
+
+  .hero-content p {
+    font-size: 16px;
+  }
+
+  .section {
+    padding: 60px 20px;
+  }
+
+  .category-filter {
+    justify-content: flex-start;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    gap: 12px;
+  }
+
+  .faq-list {
+    max-width: 100%;
+    gap: 12px;
+  }
+
+  .faq-question {
+    padding: 18px;
+    font-size: 15px;
+  }
+
+  .help-card {
+    padding: 36px 28px;
+  }
+
+  .help-card h3 {
+    font-size: 22px;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero-content h1 {
+    font-size: 28px;
+  }
+
+  .hero-content p {
+    font-size: 14px;
+  }
+
+  .section {
+    padding: 40px 20px;
+  }
+
+  .filter-btn {
+    font-size: 13px;
+    padding: 10px 20px;
+  }
+
+  .faq-question {
+    padding: 16px;
+    font-size: 14px;
+    gap: 12px;
+  }
+
+  .toggle-icon {
+    font-size: 20px;
+  }
+
+  .faq-answer {
+    padding: 0 16px 16px;
+  }
+
+  .faq-answer p {
+    font-size: 14px;
+    padding-top: 12px;
+  }
+
+  .help-card {
+    padding: 24px;
+    margin: 40px auto 0;
+  }
+
+  .help-card h3 {
+    font-size: 18px;
+  }
+
+  .help-card p {
+    font-size: 14px;
+  }
+
+  .btn-primary {
+    padding: 12px 28px;
+    font-size: 14px;
+  }
+}

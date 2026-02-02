@@ -1,0 +1,131 @@
+<header class="header">
+  <div class="header-top">
+    <div class="container">
+      <div class="header-top-left">
+        <span class="welcome-text"><i class="fas fa-heart"></i> Welcome to Our Store</span>
+      </div>
+      <div class="header-top-right">
+        <a routerLink="/help" class="top-link"><i class="fas fa-question-circle"></i> Help</a>
+        <span class="separator">|</span>
+        <a routerLink="/orders" class="top-link"><i class="fas fa-box"></i> Track Order</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="header-main">
+    <div class="container header-content">
+      <!-- Logo -->
+      <div class="logo">
+        <a routerLink="/">
+          <span class="logo-text">👕 CASUAL STORE</span>
+        </a>
+      </div>
+
+      <!-- Navigation (desktop) -->
+      <nav class="main-nav">
+        <a routerLink="/products" class="nav-item">All</a>
+        <a [routerLink]="['/products']" [queryParams]="{ category: 'women' }" class="nav-item"
+          >Women</a
+        >
+        <a [routerLink]="['/products']" [queryParams]="{ category: 'men' }" class="nav-item">Men</a>
+        <a [routerLink]="['/products']" [queryParams]="{ category: 'kids' }" class="nav-item"
+          >Kids</a
+        >
+        <a [routerLink]="['/products']" [queryParams]="{ sale: true }" class="nav-item">Sale</a>
+        <a routerLink="/new" class="nav-item">New</a>
+      </nav>
+
+      <!-- Right Icons -->
+      <div class="header-icons">
+        <!-- User Menu -->
+        <div class="user-menu" *ngIf="isAuthenticated">
+          <button class="user-btn" (click)="toggleUserMenu()" [title]="currentUser?.firstName">
+            <div class="user-avatar">{{ getInitials() }}</div>
+          </button>
+          <div class="user-dropdown" *ngIf="isUserMenuOpen">
+            <div class="user-dropdown-header">
+              <span>{{ currentUser?.firstName }} {{ currentUser?.lastName }}</span>
+            </div>
+            <a routerLink="/account" class="dropdown-item" (click)="isUserMenuOpen = false">
+              <i class="fas fa-user"></i> My Account
+            </a>
+            <a
+              routerLink="/account"
+              [queryParams]="{ tab: 'orders' }"
+              class="dropdown-item"
+              (click)="isUserMenuOpen = false"
+            >
+              <i class="fas fa-box"></i> My Orders
+            </a>
+            <a
+              routerLink="/account"
+              [queryParams]="{ tab: 'addresses' }"
+              class="dropdown-item"
+              (click)="isUserMenuOpen = false"
+            >
+              <i class="fas fa-map-marker-alt"></i> Addresses
+            </a>
+            <hr />
+            <button class="dropdown-item logout-btn" (click)="logout()">
+              <i class="fas fa-sign-out-alt"></i> Logout
+            </button>
+          </div>
+        </div>
+
+        <!-- Login Link -->
+        <a *ngIf="!isAuthenticated" routerLink="/login" class="icon-link login-link" title="Login">
+          <i class="fas fa-user-circle"></i>
+        </a>
+
+        <a routerLink="/cart" class="icon-link cart-icon" title="Cart">
+          <i class="fas fa-shopping-cart"></i>
+          <span class="badge" *ngIf="cartItemCount > 0">{{ cartItemCount }}</span>
+        </a>
+
+        <button class="menu-toggle" (click)="toggleMenu()">
+          <i class="fas fa-bars"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Navigation (mobile collapsible) -->
+  <nav class="navbar" [class.open]="isMenuOpen">
+    <div class="container">
+      <a routerLink="/" class="nav-link" (click)="isMenuOpen = false">Home</a>
+      <a routerLink="/products" class="nav-link" (click)="isMenuOpen = false">Products</a>
+      <a
+        [routerLink]="['/products']"
+        [queryParams]="{ category: 'men' }"
+        class="nav-link"
+        (click)="isMenuOpen = false"
+        >Men</a
+      >
+      <a
+        [routerLink]="['/products']"
+        [queryParams]="{ category: 'women' }"
+        class="nav-link"
+        (click)="isMenuOpen = false"
+        >Women</a
+      >
+      <a routerLink="/about" class="nav-link" (click)="isMenuOpen = false">About</a>
+      <a routerLink="/contact" class="nav-link" (click)="isMenuOpen = false">Contact</a>
+      <a routerLink="/faq" class="nav-link" (click)="isMenuOpen = false">FAQ</a>
+      <hr />
+      <a *ngIf="!isAuthenticated" routerLink="/login" class="nav-link" (click)="isMenuOpen = false">
+        <i class="fas fa-sign-in-alt"></i> Login / Register
+      </a>
+      <a
+        *ngIf="isAuthenticated"
+        routerLink="/account"
+        class="nav-link"
+        (click)="isMenuOpen = false"
+      >
+        <i class="fas fa-user"></i> My Account
+      </a>
+      <button *ngIf="isAuthenticated" class="nav-link logout-btn" (click)="logout()">
+        <i class="fas fa-sign-out-alt"></i> Logout
+      </button>
+    </div>
+  </nav>
+</header>

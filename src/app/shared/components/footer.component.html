@@ -1,0 +1,111 @@
+<footer class="footer">
+  <div class="footer-content">
+    <div class="container">
+      <div class="footer-grid">
+        <!-- About Section -->
+        <div class="footer-section">
+          <h3 class="footer-title"><i class="fas fa-info-circle"></i> About CASUAL</h3>
+          <p>Your destination for quality casual clothing for young professionals.</p>
+          <div class="social-links">
+            <a href="#" class="social-icon"><i class="fab fa-facebook"></i></a>
+            <a href="#" class="social-icon"><i class="fab fa-twitter"></i></a>
+            <a href="#" class="social-icon"><i class="fab fa-instagram"></i></a>
+            <a href="#" class="social-icon"><i class="fab fa-youtube"></i></a>
+          </div>
+        </div>
+
+        <!-- Quick Links -->
+        <div class="footer-section">
+          <h3 class="footer-title"><i class="fas fa-link"></i> Quick Links</h3>
+          <ul class="footer-links">
+            <li>
+              <a href="/about"><i class="fas fa-arrow-right"></i> About Us</a>
+            </li>
+            <li>
+              <a href="/contact"><i class="fas fa-arrow-right"></i> Contact Us</a>
+            </li>
+            <li>
+              <a href="/products"><i class="fas fa-arrow-right"></i> Products</a>
+            </li>
+            <li>
+              <a href="/faq"><i class="fas fa-arrow-right"></i> FAQ</a>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Support -->
+        <div class="footer-section">
+          <h3 class="footer-title"><i class="fas fa-headset"></i> Support</h3>
+          <ul class="footer-links">
+            <li>
+              <a href="#" onclick="alert('Help & Support')"
+                ><i class="fas fa-arrow-right"></i> Help & Support</a
+              >
+            </li>
+            <li>
+              <a href="#" onclick="alert('Track Order')"
+                ><i class="fas fa-arrow-right"></i> Track Order</a
+              >
+            </li>
+            <li>
+              <a href="#" onclick="alert('Returns')"><i class="fas fa-arrow-right"></i> Returns</a>
+            </li>
+            <li>
+              <a href="#" onclick="alert('Shipping Info')"
+                ><i class="fas fa-arrow-right"></i> Shipping Info</a
+              >
+            </li>
+          </ul>
+        </div>
+
+        <!-- Contact -->
+        <div class="footer-section">
+          <h3 class="footer-title"><i class="fas fa-phone"></i> Contact Us</h3>
+          <ul class="contact-info">
+            <li><i class="fas fa-envelope"></i> info@casual.com</li>
+            <li><i class="fas fa-phone"></i> +20 1234567890</li>
+            <li><i class="fas fa-map-marker-alt"></i> Cairo, Egypt</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Newsletter -->
+      <div class="newsletter-section">
+        <h3><i class="fas fa-envelope"></i> Subscribe to Our Newsletter</h3>
+        <p>Get exclusive offers and updates delivered to your inbox</p>
+        <form class="newsletter-form" (ngSubmit)="onSubscribe()">
+          <input
+            type="email"
+            placeholder="Enter your email"
+            [(ngModel)]="email"
+            name="email"
+            required
+          />
+          <button type="submit" class="subscribe-btn">
+            <i class="fas fa-paper-plane"></i> Subscribe
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer Bottom -->
+  <div class="footer-bottom">
+    <div class="container">
+      <div class="footer-bottom-content">
+        <p>&copy; {{ currentYear }} CASUAL. All rights reserved.</p>
+        <div class="footer-links-bottom">
+          <a href="#" onclick="alert('Privacy Policy')"
+            ><i class="fas fa-lock"></i> Privacy Policy</a
+          >
+          <span class="separator">|</span>
+          <a href="#" onclick="alert('Terms & Conditions')"
+            ><i class="fas fa-file-contract"></i> Terms & Conditions</a
+          >
+          <span class="separator">|</span>
+          <a href="#" onclick="alert('Refund Policy')"><i class="fas fa-undo"></i> Refund Policy</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>

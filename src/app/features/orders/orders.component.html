@@ -1,0 +1,168 @@
+<div class="orders-container">
+  <div class="orders-header">
+    <h1>📦 My Orders</h1>
+    <p class="orders-subtitle">Track and manage your orders</p>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="loading-state">
+    <div class="spinner"></div>
+    <p>Loading your orders...</p>
+  </div>
+
+  <!-- Empty State -->
+  <div *ngIf="!isLoading && orders.length === 0" class="empty-state">
+    <div class="empty-icon">🛒</div>
+    <h2>No Orders Yet</h2>
+    <p>You haven't placed any orders yet. Start shopping now!</p>
+    <a routerLink="/products" class="btn btn-primary">Continue Shopping</a>
+  </div>
+
+  <!-- Orders List -->
+  <div *ngIf="!isLoading && orders.length > 0" class="orders-list">
+    <div *ngFor="let order of orders" class="order-card">
+      <!-- Order Header -->
+      <div class="order-header" (click)="toggleOrderDetails(order._id)">
+        <div class="order-info">
+          <div class="order-number">
+            <strong>Order #{{ order.orderNumber }}</strong>
+            <span [ngClass]="getStatusClass(order.status)" class="status-badge">
+              {{ getStatusBadgeText(order.status) }}
+            </span>
+          </div>
+          <div class="order-date">📅 {{ formatDate(order.createdAt) }}</div>
+        </div>
+
+        <div class="order-summary">
+          <div class="order-total">
+            <strong>EGP {{ order.totalAmount.toFixed(2) }}</strong>
+            <span class="items-count">{{ getTotalItems(order.items) }} items</span>
+          </div>
+          <div class="expand-icon" [class.expanded]="expandedOrderId === order._id">▼</div>
+        </div>
+      </div>
+
+      <!-- Order Details (Expanded) -->
+      <div *ngIf="expandedOrderId === order._id" class="order-details">
+        <!-- Items -->
+        <div class="order-items">
+          <h3>Order Items</h3>
+          <table class="items-table">
+            <thead>
+              <tr>
+                <th>Product</th>
+                <th class="text-right">Quantity</th>
+                <th class="text-right">Unit Price</th>
+                <th class="text-right">Total</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let item of order.items">
+                <td class="product-name">{{ item.productName }}</td>
+                <td class="text-right">{{ item.quantity }}</td>
+                <td class="text-right">EGP {{ item.price.toFixed(2) }}</td>
+                <td class="text-right">
+                  <strong>EGP {{ (item.price * item.quantity).toFixed(2) }}</strong>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Shipping Address -->
+        <div class="shipping-info">
+          <h3>🚚 Shipping Address</h3>
+          <div class="address-details">
+            <p>
+              <strong>{{ order.shippingAddress.name }}</strong>
+            </p>
+            <p>{{ order.shippingAddress.street }}</p>
+            <p>
+              {{ order.shippingAddress.city }}, {{ order.shippingAddress.state }}
+              {{ order.shippingAddress.postalCode }}
+            </p>
+            <p>{{ order.shippingAddress.country }}</p>
+            <p class="phone">📱 {{ order.shippingAddress.mobile }}</p>
+          </div>
+        </div>
+
+        <!-- Payment Info -->
+        <div class="payment-info">
+          <h3>💳 Payment Information</h3>
+          <div class="payment-details">
+            <div class="payment-row">
+              <span>Payment Method:</span>
+              <strong>Cash on Delivery (COD)</strong>
+            </div>
+            <div class="payment-row">
+              <span>Payment Status:</span>
+              <span [ngClass]="getPaymentStatusClass(order.paymentStatus)" class="payment-status">
+                {{ order.paymentStatus }}
+              </span>
+            </div>
+            <div class="payment-row">
+              <span>Total Amount:</span>
+              <strong class="total-amount">EGP {{ order.totalAmount.toFixed(2) }}</strong>
+            </div>
+          </div>
+        </div>
+
+        <!-- Order Timeline -->
+        <div class="order-timeline">
+          <h3>📍 Order Timeline</h3>
+          <div class="timeline">
+            <div
+              class="timeline-item"
+              [class.active]="
+                ['Pending', 'Processing', 'Ready', 'Shipped', 'Received'].includes(order.status)
+              "
+            >
+              <div class="timeline-dot"></div>
+              <div class="timeline-label">Pending</div>
+            </div>
+            <div
+              class="timeline-item"
+              [class.active]="['Processing', 'Ready', 'Shipped', 'Received'].includes(order.status)"
+            >
+              <div class="timeline-dot"></div>
+              <div class="timeline-label">Processing</div>
+            </div>
+            <div
+              class="timeline-item"
+              [class.active]="['Ready', 'Shipped', 'Received'].includes(order.status)"
+            >
+              <div class="timeline-dot"></div>
+              <div class="timeline-label">Ready</div>
+            </div>
+            <div
+              class="timeline-item"
+              [class.active]="['Shipped', 'Received'].includes(order.status)"
+            >
+              <div class="timeline-dot"></div>
+              <div class="timeline-label">Shipped</div>
+            </div>
+            <div class="timeline-item" [class.active]="order.status === 'Received'">
+              <div class="timeline-dot"></div>
+              <div class="timeline-label">Received</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="order-actions">
+          <button *ngIf="canCancelOrder(order)" class="btn btn-danger" (click)="cancelOrder(order)">
+            ❌ Cancel Order
+          </button>
+          <button
+            *ngIf="!canCancelOrder(order)"
+            class="btn btn-disabled"
+            disabled
+            title="This order cannot be cancelled"
+          >
+            ❌ Cannot Cancel
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

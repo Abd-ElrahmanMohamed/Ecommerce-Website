@@ -1,0 +1,46 @@
+<div class="product-card" [class.out-of-stock]="isOutOfStock()">
+  <div class="product-image">
+    <img [src]="product.images[0]" [alt]="product.name" (click)="onViewDetails()" />
+
+    <div class="badges">
+      <span class="badge badge-bestseller" *ngIf="product.isBestSeller"
+        ><i class="fas fa-star"></i> Best Seller</span
+      >
+      <span class="badge badge-new" *ngIf="product.isNewArrival"
+        ><i class="fas fa-bolt"></i> New</span
+      >
+    </div>
+
+    <button class="add-to-cart-btn" (click)="onAddToCart($event)" [disabled]="isOutOfStock()">
+      <i class="fas fa-shopping-cart"></i>
+      {{ isOutOfStock() ? 'Out of Stock' : 'Add to Cart' }}
+    </button>
+  </div>
+
+  <div class="product-info">
+    <div class="category"><i class="fas fa-tag"></i> {{ product.categoryId }}</div>
+    <h3 class="product-name" (click)="onViewDetails()">{{ product.name }}</h3>
+
+    <div class="rating">
+      <div class="stars">
+        <i class="fas fa-star filled" *ngFor="let i of [1, 2, 3, 4, 5]"></i>
+      </div>
+      <span class="rating-value">{{ product.rating }}</span>
+      <span class="review-count">(<i class="fas fa-comments"></i> {{ product.reviewCount }})</span>
+    </div>
+
+    <div class="stock-info">
+      <span class="status" [class.in-stock]="!isOutOfStock()" [class.out-of-stock]="isOutOfStock()">
+        <i [class]="!isOutOfStock() ? 'fas fa-check-circle' : 'fas fa-times-circle'"></i>
+        {{ getStockStatus() }}
+      </span>
+      <span class="stock-count low-stock-warning" *ngIf="showStockCount()"
+        ><i class="fas fa-exclamation-triangle"></i> Only {{ product.quantity }} in stock!</span
+      >
+    </div>
+
+    <div class="product-footer">
+      <span class="price">EGP {{ product.price | number: '1.2-2' }}</span>
+    </div>
+  </div>
+</div>

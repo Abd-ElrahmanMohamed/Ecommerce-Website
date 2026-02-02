@@ -1,0 +1,197 @@
+<app-header></app-header>
+
+<!-- Hero Section -->
+<section class="hero">
+  <img
+    src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=1200&h=400&fit=crop"
+    alt="Cart Hero"
+    class="hero-bg"
+  />
+  <div class="hero-overlay"></div>
+  <div class="hero-content">
+    <h1>Your Shopping Cart</h1>
+    <p>Review and manage your items</p>
+  </div>
+</section>
+
+<div class="cart-container">
+  <div class="container">
+    <!-- Breadcrumb -->
+    <div class="breadcrumb"><a href="/">Home</a> / <span>Cart</span></div>
+
+    <h1 style="display: none">Shopping Cart</h1>
+
+    <!-- Loading State -->
+    <div *ngIf="isLoading" style="text-align: center; padding: 40px">
+      <p>Loading your cart...</p>
+    </div>
+
+    <!-- Empty Cart State -->
+    <div *ngIf="isEmpty && !isLoading" style="text-align: center; padding: 60px 20px">
+      <h2>Your cart is empty</h2>
+      <p style="margin: 20px 0; color: #666">You haven't added any items yet.</p>
+      <button
+        (click)="continueShopping()"
+        style="
+          padding: 12px 30px;
+          background-color: #007bff;
+          color: white;
+          border: none;
+          border-radius: 4px;
+          cursor: pointer;
+          font-size: 16px;
+        "
+      >
+        Continue Shopping
+      </button>
+    </div>
+
+    <!-- Price Changed Warning -->
+    <div class="price-changed-alert" *ngIf="priceChangedItems.length > 0">
+      <div class="alert-icon">⚠️</div>
+      <div class="alert-content">
+        <h3>Price Changed</h3>
+        <p>Some items in your cart have price changes. Please review them before checkout.</p>
+      </div>
+    </div>
+
+    <!-- Price Changed Items Section -->
+    <div class="price-changed-section" *ngIf="priceChangedItems.length > 0 && !isLoading">
+      <div class="cart-items">
+        <div class="price-changed-header">
+          <h3>Items with Price Changes</h3>
+          <p>
+            These items have changed price since you added them. Please accept the new price or
+            remove them from your cart.
+          </p>
+        </div>
+
+        <table class="cart-table">
+          <thead>
+            <tr>
+              <th>Product</th>
+              <th>Original Price</th>
+              <th>New Price</th>
+              <th>Quantity</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of priceChangedItems" class="price-changed-row">
+              <td class="product-cell">
+                <img [src]="item.image" [alt]="item.name" class="product-image" />
+                <div class="product-name">{{ item.name }}</div>
+              </td>
+              <td class="original-price">
+                <s>EGP {{ item.originalPrice | number: '1.2-2' }}</s>
+              </td>
+              <td class="new-price">EGP {{ item.newPrice | number: '1.2-2' }}</td>
+              <td class="quantity-cell">{{ item.quantity }}</td>
+              <td class="action-cell">
+                <button
+                  class="accept-btn"
+                  (click)="acceptPriceChange(item)"
+                  title="Accept new price"
+                >
+                  Accept New Price
+                </button>
+                <button
+                  class="remove-btn"
+                  (click)="rejectPriceChange(item)"
+                  title="Remove from cart"
+                >
+                  Remove
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Main Cart Section -->
+    <div class="cart-layout" *ngIf="cartItems.length > 0 && !isLoading">
+      <!-- Cart Items -->
+      <div class="cart-items">
+        <table class="cart-table">
+          <thead>
+            <tr>
+              <th>Product</th>
+              <th>Price</th>
+              <th>Quantity</th>
+              <th>Total</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of cartItems" [class.price-changed]="item.priceChanged">
+              <td class="product-cell">
+                <img [src]="item.image" [alt]="item.name" class="product-image" />
+                <div>
+                  <div class="product-name">{{ item.name }}</div>
+                  <div class="price-change-tag" *ngIf="item.priceChanged">
+                    Price changed: <s>EGP {{ item.previousPrice | number: '1.2-2' }}</s> → EGP
+                    {{ item.price | number: '1.2-2' }}
+                  </div>
+                </div>
+              </td>
+              <td class="price-cell">EGP {{ item.price | number: '1.2-2' }}</td>
+              <td class="quantity-cell">
+                <div class="quantity-control">
+                  <button (click)="updateQuantity(item, item.quantity - 1)">−</button>
+                  <input
+                    type="number"
+                    [(ngModel)]="item.quantity"
+                    (change)="updateQuantity(item, item.quantity)"
+                    class="qty-input"
+                  />
+                  <button (click)="updateQuantity(item, item.quantity + 1)">+</button>
+                </div>
+              </td>
+              <td class="total-cell">EGP {{ item.price * item.quantity | number: '1.2-2' }}</td>
+              <td class="remove-cell">
+                <button class="remove-btn" (click)="removeItem(item.id)" title="Remove">🗑️</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Order Summary -->
+      <aside class="order-summary">
+        <div class="summary-card">
+          <h2>Order Summary</h2>
+
+          <div class="summary-row">
+            <span>Subtotal</span>
+            <span>EGP {{ subtotal | number: '1.2-2' }}</span>
+          </div>
+
+          <div class="summary-row" *ngIf="shipping > 0">
+            <span>Shipping</span>
+            <span>EGP {{ shipping | number: '1.2-2' }}</span>
+          </div>
+
+          <div class="summary-row" *ngIf="shipping === 0">
+            <span class="free-shipping">Free Shipping</span>
+            <span class="free-shipping">✓</span>
+          </div>
+
+          <div class="divider"></div>
+
+          <div class="summary-row total-row">
+            <span>Total</span>
+            <span>EGP {{ total | number: '1.2-2' }}</span>
+          </div>
+
+          <button class="checkout-btn" (click)="checkout()">Proceed to Checkout</button>
+          <button class="continue-shopping-btn" (click)="continueShopping()">
+            Continue Shopping
+          </button>
+        </div>
+      </aside>
+    </div>
+  </div>
+</div>
+
+<app-footer></app-footer>

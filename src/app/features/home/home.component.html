@@ -1,0 +1,275 @@
+<app-header></app-header>
+
+<!-- Hero Section -->
+<section class="hero">
+  <div class="bg-pattern"></div>
+  <div class="floating-icons">
+    <div class="fashion-icon">👗</div>
+    <div class="fashion-icon">👔</div>
+    <div class="fashion-icon">👟</div>
+    <div class="fashion-icon">👜</div>
+  </div>
+
+  <div class="container hero-content">
+    <div class="hero-text">
+      <span class="season-badge">🔥 Winter Collection 2026</span>
+      <h1>Modern Fashion <span class="highlight">At Great Prices</span></h1>
+      <p>Discover the latest trends and choose from thousands of pieces that match your style.</p>
+
+      <div class="cta-buttons">
+        <a routerLink="/products" class="btn btn-primary">Shop Now</a>
+        <a routerLink="/products" [queryParams]="{ view: 'collection' }" class="btn btn-secondary"
+          >View Collection</a
+        >
+      </div>
+
+      <div class="features">
+        <div class="feature-item">
+          <span class="feature-icon">🚚</span>
+          <span class="feature-text">Free Shipping</span>
+        </div>
+        <div class="feature-item">
+          <span class="feature-icon">↩️</span>
+          <span class="feature-text">Easy Returns</span>
+        </div>
+        <div class="feature-item">
+          <span class="feature-icon">💳</span>
+          <span class="feature-text">Secure Payment</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="hero-image">
+      <div class="fashion-showcase">
+        <div class="model-card side-card side-card-left">
+          <div class="card-content">
+            <div class="outfit-icon">👔</div>
+          </div>
+        </div>
+
+        <div class="model-card main-card">
+          <span class="discount-badge">40% OFF</span>
+          <div class="card-content">
+            <div class="outfit-icon">👗</div>
+            <div class="price-tag">299 EGP</div>
+          </div>
+        </div>
+
+        <div class="model-card side-card side-card-right">
+          <div class="card-content">
+            <div class="outfit-icon">👟</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Best Sellers Section -->
+<section class="section">
+  <div class="container">
+    <div class="section-header">
+      <h2>Best Sellers</h2>
+      <a routerLink="/products" class="view-all">View All →</a>
+    </div>
+    <div class="products-grid">
+      <app-product-card
+        *ngFor="let product of bestSellers"
+        [product]="product"
+        (addToCart)="onAddToCart($event)"
+        (viewDetails)="onViewDetails($event)"
+      >
+      </app-product-card>
+    </div>
+  </div>
+</section>
+
+<!-- New Arrivals Section -->
+<section class="section bg-light">
+  <div class="container">
+    <div class="section-header">
+      <h2>New Arrivals</h2>
+      <a routerLink="/products" class="view-all">View All →</a>
+    </div>
+    <div class="products-grid">
+      <app-product-card
+        *ngFor="let product of newArrivals"
+        [product]="product"
+        (addToCart)="onAddToCart($event)"
+        (viewDetails)="onViewDetails($event)"
+      >
+      </app-product-card>
+    </div>
+  </div>
+</section>
+
+<!-- Men Section -->
+<section class="section">
+  <div class="container">
+    <div class="category-header">
+      <div class="category-image">
+        <img
+          src="https://via.placeholder.com/200x150/000000/FFFFFF?text=Mens"
+          alt="Men's Collection"
+        />
+      </div>
+      <h2>👕 Men's Collection</h2>
+    </div>
+
+    <div class="men-subsection">
+      <h3>New Arrivals for Men</h3>
+      <div class="products-grid">
+        <app-product-card
+          *ngFor="let product of menNewArrivals"
+          [product]="product"
+          (addToCart)="onAddToCart($event)"
+          (viewDetails)="onViewDetails($event)"
+        >
+        </app-product-card>
+      </div>
+    </div>
+
+    <div class="men-subsection">
+      <h3>Best Sellers for Men</h3>
+      <div class="products-grid">
+        <app-product-card
+          *ngFor="let product of menBestSellers"
+          [product]="product"
+          (addToCart)="onAddToCart($event)"
+          (viewDetails)="onViewDetails($event)"
+        >
+        </app-product-card>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Women Section -->
+<section class="section bg-light">
+  <div class="container">
+    <div class="category-header">
+      <div class="category-image">
+        <img
+          src="https://via.placeholder.com/200x150/FF69B4/FFFFFF?text=Womens"
+          alt="Women's Collection"
+        />
+      </div>
+      <h2>👗 Women's Collection</h2>
+    </div>
+
+    <div class="women-subsection">
+      <h3>New Arrivals for Women</h3>
+      <div class="products-grid">
+        <app-product-card
+          *ngFor="let product of womenNewArrivals"
+          [product]="product"
+          (addToCart)="onAddToCart($event)"
+          (viewDetails)="onViewDetails($event)"
+        >
+        </app-product-card>
+      </div>
+    </div>
+
+    <div class="women-subsection">
+      <h3>Best Sellers for Women</h3>
+      <div class="products-grid">
+        <app-product-card
+          *ngFor="let product of womenBestSellers"
+          [product]="product"
+          (addToCart)="onAddToCart($event)"
+          (viewDetails)="onViewDetails($event)"
+        >
+        </app-product-card>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Customer Reviews Section -->
+<section class="section">
+  <div class="container">
+    <div class="section-header">
+      <h2>Customer Reviews</h2>
+    </div>
+    <div class="reviews-grid">
+      <div class="review-card" *ngFor="let review of reviews">
+        <div class="review-header">
+          <h4>{{ review.userName }}</h4>
+          <div class="stars">
+            <span class="star filled" *ngFor="let i of [1, 2, 3, 4, 5]"></span>
+          </div>
+        </div>
+        <p class="review-text">{{ review.comment }}</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ Preview -->
+<section class="section bg-light">
+  <div class="container">
+    <div class="section-header">
+      <h2>Frequently Asked Questions</h2>
+      <a routerLink="/faq" class="view-all">View All →</a>
+    </div>
+    <div class="faq-preview">
+      <div class="faq-item">
+        <h4>What is your shipping policy?</h4>
+        <p>We ship orders within 2-5 business days to most locations in Egypt.</p>
+      </div>
+      <div class="faq-item">
+        <h4>What payment methods do you accept?</h4>
+        <p>We accept Cash on Delivery (COD) for all orders.</p>
+      </div>
+      <div class="faq-item">
+        <h4>Can I return products?</h4>
+        <p>Yes, returns are accepted within 14 days of purchase.</p>
+      </div>
+      <div class="faq-item">
+        <h4>How can I track my order?</h4>
+        <p>You can track your order using your order number in our order tracking page.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Contact Info -->
+<section class="section contact-section">
+  <div class="container">
+    <div class="section-header">
+      <h2>Get In Touch</h2>
+      <p>We're here to help. Reach out to us anytime!</p>
+    </div>
+    <div class="contact-grid">
+      <div class="contact-card">
+        <div class="icon">📍</div>
+        <h3>Visit Us</h3>
+        <p>{{ contactInfo.address }}</p>
+      </div>
+      <div class="contact-card">
+        <div class="icon">📧</div>
+        <h3>Email</h3>
+        <p>
+          <a href="mailto:{{ contactInfo.email }}">{{ contactInfo.email }}</a>
+        </p>
+      </div>
+      <div class="contact-card">
+        <div class="icon">📞</div>
+        <h3>Call Us</h3>
+        <p>
+          <a href="tel:{{ contactInfo.phone }}">{{ contactInfo.phone }}</a>
+        </p>
+      </div>
+      <div class="contact-card">
+        <div class="icon">⏰</div>
+        <h3>Hours</h3>
+        <p>{{ contactInfo.hours }}</p>
+      </div>
+    </div>
+    <div class="contact-cta">
+      <a routerLink="/contact" class="btn btn-primary">Send us a Message</a>
+    </div>
+  </div>
+</section>
+
+<app-footer></app-footer>

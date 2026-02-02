@@ -1,0 +1,503 @@
+<app-header></app-header>
+
+<!-- Hero Section -->
+<section class="hero">
+  <img
+    src="https://images.unsplash.com/photo-1552062407-291826ad9014?w=1200&h=400&fit=crop"
+    alt="Checkout Hero"
+    class="hero-bg"
+  />
+  <div class="hero-overlay"></div>
+  <div class="hero-content">
+    <h1>🛒 Secure Checkout</h1>
+    <p>Your purchase is safe with us</p>
+  </div>
+</section>
+
+<div class="checkout-container">
+  <div class="container">
+    <!-- Breadcrumb -->
+    <div class="breadcrumb">
+      <a href="/">Home</a> / <a href="/cart">Cart</a> / <span>Checkout</span>
+    </div>
+
+    <!-- Price Changed Warning -->
+    <div class="price-changed-warning" *ngIf="hasUnacceptedPriceChanges">
+      <div class="warning-icon">⚠️</div>
+      <div class="warning-content">
+        <h3>Price Changes Detected</h3>
+        <p>{{ priceChangedItems.length }} item(s) have price changes in your cart.</p>
+        <p style="margin-top: 8px; font-weight: 500">
+          Please go back to your cart to accept or reject the new prices before continuing.
+        </p>
+        <button class="back-to-cart-btn" (click)="cancelCheckout()">← Back to Cart</button>
+      </div>
+    </div>
+
+    <!-- Steps Progress -->
+    <div class="steps-progress" *ngIf="!hasUnacceptedPriceChanges">
+      <div
+        class="step"
+        [class.active]="step === 'userinfo'"
+        [class.completed]="step !== 'userinfo' && !isLoggedIn"
+      >
+        <span class="step-number">{{ isLoggedIn ? '✓' : '1' }}</span>
+        <span class="step-label">Account</span>
+      </div>
+      <div class="step-connector" *ngIf="!isLoggedIn"></div>
+
+      <div
+        class="step"
+        [class.active]="step === 'address'"
+        [class.completed]="step === 'payment' || step === 'confirmation'"
+      >
+        <span class="step-number">{{
+          step === 'payment' || step === 'confirmation' ? '✓' : isLoggedIn ? '1' : '2'
+        }}</span>
+        <span class="step-label">Address</span>
+      </div>
+      <div class="step-connector"></div>
+
+      <div
+        class="step"
+        [class.active]="step === 'payment'"
+        [class.completed]="step === 'confirmation'"
+      >
+        <span class="step-number">{{
+          step === 'confirmation' ? '✓' : isLoggedIn ? '2' : '3'
+        }}</span>
+        <span class="step-label">Review</span>
+      </div>
+      <div class="step-connector"></div>
+
+      <div class="step" [class.active]="step === 'confirmation'">
+        <span class="step-number">{{ isLoggedIn ? '3' : '4' }}</span>
+        <span class="step-label">Confirm</span>
+      </div>
+    </div>
+
+    <div class="checkout-content" *ngIf="!hasUnacceptedPriceChanges">
+      <!-- Main Checkout Area -->
+      <div class="checkout-main">
+        <!-- ===== STEP 1: USER INFO (Only for guests) ===== -->
+        <div *ngIf="step === 'userinfo' && !isLoggedIn" class="checkout-section">
+          <h2>👤 Account Information</h2>
+
+          <div class="form-section">
+            <div class="form-group">
+              <label class="form-label"><span class="required">*</span> First Name</label>
+              <input
+                [(ngModel)]="userInfo.firstName"
+                type="text"
+                placeholder="Enter your first name"
+                class="form-input"
+              />
+            </div>
+
+            <div class="form-group">
+              <label class="form-label"><span class="required">*</span> Last Name</label>
+              <input
+                [(ngModel)]="userInfo.lastName"
+                type="text"
+                placeholder="Enter your last name"
+                class="form-input"
+              />
+            </div>
+
+            <div class="form-group">
+              <label class="form-label"><span class="required">*</span> Email</label>
+              <input
+                [(ngModel)]="userInfo.email"
+                type="email"
+                placeholder="example@email.com"
+                class="form-input"
+              />
+            </div>
+
+            <div class="form-group">
+              <label class="form-label"><span class="required">*</span> Mobile Number</label>
+              <input
+                [(ngModel)]="userInfo.mobile"
+                type="tel"
+                placeholder="01XX XXX XXXX"
+                class="form-input"
+              />
+            </div>
+
+            <div class="form-group">
+              <label class="form-label"><span class="required">*</span> Create Password</label>
+              <input
+                [(ngModel)]="userInfo.password"
+                type="password"
+                placeholder="Minimum 6 characters"
+                class="form-input"
+              />
+            </div>
+          </div>
+
+          <div class="form-actions">
+            <button (click)="continueToAddress()" class="btn btn-primary">
+              Continue to Address →
+            </button>
+            <button (click)="cancelCheckout()" class="btn btn-secondary">← Back to Cart</button>
+          </div>
+        </div>
+
+        <!-- ===== STEP 2: SHIPPING ADDRESS ===== -->
+        <div *ngIf="step === 'address'" class="checkout-section">
+          <h2>📍 Shipping Address</h2>
+
+          <!-- Saved Addresses -->
+          <div *ngIf="addresses.length > 0" class="addresses-list">
+            <h3>Your Saved Addresses</h3>
+            <div class="address-cards">
+              <div
+                *ngFor="let addr of addresses"
+                class="address-card"
+                [class.selected]="selectedAddressId === addr.id"
+                (click)="selectAddress(addr.id || '')"
+              >
+                <label class="address-radio">
+                  <input type="radio" [checked]="selectedAddressId === addr.id" />
+                  <div class="address-radio-content">
+                    <span class="address-type">
+                      {{
+                        addr.type === 'home'
+                          ? '🏠 HOME'
+                          : addr.type === 'office'
+                            ? '🏢 OFFICE'
+                            : '📍 OTHER'
+                      }}
+                    </span>
+                    <p class="address-name">
+                      <strong>{{ addr.name }}</strong>
+                    </p>
+                    <p class="address-details-text">
+                      {{ addr.street }}, {{ addr.city }}, {{ addr.state }} {{ addr.postalCode }}
+                    </p>
+                    <p class="address-country">{{ addr.country }} | {{ addr.mobile }}</p>
+                  </div>
+                </label>
+                <div class="address-actions">
+                  <button
+                    type="button"
+                    class="btn-small"
+                    (click)="setDefaultAddress(addr.id || '')"
+                    *ngIf="!addr.isDefault"
+                  >
+                    Set Default
+                  </button>
+                  <span class="default-badge" *ngIf="addr.isDefault">⭐ Default</span>
+                  <button type="button" class="btn-delete" (click)="deleteAddress(addr.id)">
+                    ✕
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Add New Address -->
+          <div class="add-address-section">
+            <button type="button" class="btn-add-address" (click)="toggleAddressForm()">
+              <span *ngIf="!showAddressForm">+ Add New Address</span>
+              <span *ngIf="showAddressForm">- Cancel</span>
+            </button>
+
+            <form *ngIf="showAddressForm" class="new-address-form">
+              <h3>Add New Shipping Address</h3>
+
+              <div class="form-row">
+                <div class="form-group">
+                  <label><span class="required">*</span> Address Type</label>
+                  <select [(ngModel)]="newAddress.type" name="type" class="form-input">
+                    <option *ngFor="let t of addressTypes" [value]="t.value">
+                      {{ t.label }}
+                    </option>
+                  </select>
+                </div>
+
+                <div class="form-group">
+                  <label><span class="required">*</span> Address Label</label>
+                  <input
+                    [(ngModel)]="newAddress.name"
+                    name="name"
+                    type="text"
+                    placeholder="e.g., 'My Home', 'Work Office'"
+                    class="form-input"
+                  />
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label><span class="required">*</span> Street Address</label>
+                <input
+                  [(ngModel)]="newAddress.street"
+                  name="street"
+                  type="text"
+                  placeholder="Street address"
+                  class="form-input"
+                />
+              </div>
+
+              <div class="form-row">
+                <div class="form-group">
+                  <label><span class="required">*</span> City</label>
+                  <input
+                    [(ngModel)]="newAddress.city"
+                    name="city"
+                    type="text"
+                    placeholder="Cairo, Alexandria, etc."
+                    class="form-input"
+                  />
+                </div>
+
+                <div class="form-group">
+                  <label><span class="required">*</span> State</label>
+                  <input
+                    [(ngModel)]="newAddress.state"
+                    name="state"
+                    type="text"
+                    placeholder="State/Province"
+                    class="form-input"
+                  />
+                </div>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group">
+                  <label><span class="required">*</span> Postal Code</label>
+                  <input
+                    [(ngModel)]="newAddress.postalCode"
+                    name="postalCode"
+                    type="text"
+                    placeholder="12345"
+                    class="form-input"
+                  />
+                </div>
+
+                <div class="form-group">
+                  <label><span class="required">*</span> Country</label>
+                  <input
+                    [(ngModel)]="newAddress.country"
+                    name="country"
+                    type="text"
+                    placeholder="Country"
+                    class="form-input"
+                  />
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label><span class="required">*</span> Mobile Number</label>
+                <input
+                  [(ngModel)]="newAddress.mobile"
+                  name="mobile"
+                  type="tel"
+                  placeholder="01XX XXX XXXX"
+                  class="form-input"
+                />
+              </div>
+
+              <label class="checkbox-label">
+                <input type="checkbox" [(ngModel)]="newAddress.isDefault" name="isDefault" />
+                <span>Set as my default address</span>
+              </label>
+
+              <button type="button" (click)="addAddress()" class="btn btn-primary">
+                ✓ Add This Address
+              </button>
+            </form>
+          </div>
+
+          <div class="form-actions">
+            <button (click)="continueToPayment()" class="btn btn-primary">
+              Continue to Review →
+            </button>
+            <button (click)="step = isLoggedIn ? 'address' : 'userinfo'" class="btn btn-secondary">
+              ← Back
+            </button>
+          </div>
+        </div>
+
+        <!-- ===== STEP 3: REVIEW & CONFIRM ===== -->
+        <div *ngIf="step === 'payment'" class="checkout-section">
+          <h2>📋 Review Your Order</h2>
+
+          <!-- User Info Summary -->
+          <div class="summary-box">
+            <h3>📧 Account Details</h3>
+            <div class="summary-grid">
+              <div class="summary-item">
+                <span class="label">Name:</span>
+                <span class="value">{{ userInfo.firstName }} {{ userInfo.lastName }}</span>
+              </div>
+              <div class="summary-item">
+                <span class="label">Email:</span>
+                <span class="value">{{ userInfo.email }}</span>
+              </div>
+              <div class="summary-item">
+                <span class="label">Mobile:</span>
+                <span class="value">{{ userInfo.mobile }}</span>
+              </div>
+            </div>
+            <button
+              type="button"
+              class="btn-edit"
+              (click)="step = isLoggedIn ? 'address' : 'userinfo'"
+            >
+              Edit
+            </button>
+          </div>
+
+          <!-- Address Summary -->
+          <div class="summary-box">
+            <h3>🏠 Shipping Address</h3>
+            <div *ngIf="selectedAddress">
+              <p>
+                <strong>{{ selectedAddress.name }}</strong>
+              </p>
+              <p>{{ selectedAddress.street }}</p>
+              <p>
+                {{ selectedAddress.city }}, {{ selectedAddress.state }}
+                {{ selectedAddress.postalCode }}
+              </p>
+              <p>{{ selectedAddress.country }}</p>
+              <p>📱 {{ selectedAddress.mobile }}</p>
+            </div>
+            <button type="button" class="btn-edit" (click)="step = 'address'">
+              Change Address
+            </button>
+          </div>
+
+          <!-- Items Preview -->
+          <div class="summary-box">
+            <h3>📦 Order Items</h3>
+            <div class="items-preview">
+              <div *ngFor="let item of orderItems" class="preview-item">
+                <span>{{ item.name }} x{{ item.quantity }}</span>
+                <span>EGP {{ item.price * item.quantity | number: '1.2-2' }}</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-actions">
+            <button (click)="confirmOrder()" class="btn btn-primary btn-large">
+              Place Order →
+            </button>
+            <button (click)="step = 'address'" class="btn btn-secondary">← Back</button>
+          </div>
+        </div>
+
+        <!-- ===== STEP 4: CONFIRMATION ===== -->
+        <div *ngIf="step === 'confirmation'" class="checkout-section">
+          <div *ngIf="placedOrder" class="confirmation-success">
+            <div class="success-icon">✅</div>
+            <h2>Order Placed Successfully!</h2>
+            <p>Thank you for your purchase. Your order is being prepared.</p>
+
+            <div class="order-confirmation-details">
+              <div class="detail-row">
+                <span class="label">Order Number:</span>
+                <span class="value highlight">{{ placedOrder.orderNumber }}</span>
+              </div>
+              <div class="detail-row">
+                <span class="label">Total Amount:</span>
+                <span class="value highlight"
+                  >EGP {{ placedOrder.totalAmount | number: '1.2-2' }}</span
+                >
+              </div>
+              <div class="detail-row">
+                <span class="label">Status:</span>
+                <span class="value">⏳ Pending Confirmation</span>
+              </div>
+            </div>
+
+            <p class="confirmation-message">
+              A confirmation email has been sent to <strong>{{ userInfo.email }}</strong>
+            </p>
+
+            <div class="confirmation-actions">
+              <a href="/orders" class="btn btn-primary">📦 View My Orders</a>
+              <a href="/products" class="btn btn-secondary">🛍️ Continue Shopping</a>
+            </div>
+          </div>
+
+          <div *ngIf="!placedOrder && isLoadingOrder" class="loading-state">
+            <div class="spinner"></div>
+            <p>Processing your order...</p>
+          </div>
+
+          <div *ngIf="orderError && !isLoadingOrder" class="error-state">
+            <div class="error-icon">❌</div>
+            <p class="error-message">{{ orderError }}</p>
+            <button (click)="step = 'payment'" class="btn btn-primary">← Back to Review</button>
+          </div>
+
+          <!-- Place Order Button (Final Confirmation) -->
+          <div *ngIf="!placedOrder && !isLoadingOrder && !orderError" class="final-confirmation">
+            <button
+              (click)="placeOrder()"
+              class="btn btn-primary btn-large"
+              [disabled]="isLoadingOrder"
+            >
+              {{ isLoadingOrder ? '⏳ Processing...' : '✓ Confirm & Place Order' }}
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Order Summary Sidebar -->
+      <div class="checkout-sidebar">
+        <div class="order-summary-box">
+          <h3>Order Summary</h3>
+
+          <!-- Order Items -->
+          <div class="items-list">
+            <div *ngFor="let item of orderItems" class="item">
+              <div class="item-image">
+                <img [src]="item.image" [alt]="item.name" (error)="onImageError($event)" />
+              </div>
+              <div class="item-details">
+                <p class="item-name">{{ item.name }}</p>
+                <p class="item-quantity">Qty: {{ item.quantity }}</p>
+                <p class="item-price">EGP {{ item.price | number: '1.2-2' }}</p>
+              </div>
+              <div class="item-total">EGP {{ item.total | number: '1.2-2' }}</div>
+            </div>
+          </div>
+
+          <div class="divider"></div>
+
+          <!-- Totals -->
+          <div class="totals">
+            <div class="total-row">
+              <span>Subtotal:</span>
+              <span>EGP {{ subtotal | number: '1.2-2' }}</span>
+            </div>
+            <div class="total-row" *ngIf="shipping > 0">
+              <span>Shipping:</span>
+              <span>EGP {{ shipping | number: '1.2-2' }}</span>
+            </div>
+            <div class="total-row" *ngIf="shipping === 0">
+              <span>Shipping:</span>
+              <span class="free">FREE ✓</span>
+            </div>
+            <div class="total-row final">
+              <span>Total:</span>
+              <span class="total-amount">EGP {{ total | number: '1.2-2' }}</span>
+            </div>
+          </div>
+
+          <!-- Payment Method -->
+          <div class="payment-method">
+            <h4>💳 Payment Method</h4>
+            <p>Cash on Delivery (COD)</p>
+            <p class="note">Pay when your order arrives</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<app-footer></app-footer>

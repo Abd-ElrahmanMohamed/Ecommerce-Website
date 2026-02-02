@@ -1,0 +1,64 @@
+<app-header></app-header>
+
+<!-- Hero Section -->
+<section class="hero">
+  <img
+    src="https://images.unsplash.com/photo-1553514029-1318c9127859?w=1200&h=400&fit=crop"
+    alt="FAQ Hero"
+    class="hero-bg"
+  />
+  <div class="hero-overlay"></div>
+  <div class="hero-content">
+    <h1>Frequently Asked Questions</h1>
+    <p>Find answers to common questions about our products and services</p>
+  </div>
+</section>
+
+<div class="faq-container">
+  <section class="hero-section">
+    <div class="container">
+      <h1 style="display: none">Frequently Asked Questions</h1>
+      <p style="display: none">Find answers to common questions about our products and services</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <!-- Category Filter -->
+      <div class="category-filter">
+        <button
+          *ngFor="let cat of categories"
+          class="filter-btn"
+          [class.active]="selectedCategory === cat.id"
+          (click)="selectedCategory = cat.id"
+        >
+          {{ cat.name }}
+        </button>
+      </div>
+
+      <!-- FAQs List -->
+      <div class="faq-list">
+        <div class="faq-item" *ngFor="let faq of filteredFaqs" [class.open]="faq.open">
+          <button class="faq-question" (click)="toggleFaq(faq)">
+            <span class="question-text">{{ faq.question }}</span>
+            <span class="toggle-icon">{{ faq.open ? '−' : '+' }}</span>
+          </button>
+          <div class="faq-answer" *ngIf="faq.open">
+            <p>{{ faq.answer }}</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Still Need Help -->
+      <div class="help-section">
+        <div class="help-card">
+          <h3>Still can't find what you're looking for?</h3>
+          <p>Contact our support team - we're here to help!</p>
+          <a href="/contact" class="btn-primary">Contact Us</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<app-footer></app-footer>
